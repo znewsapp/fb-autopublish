@@ -32,13 +32,12 @@ export default {
       const linksInDB = this.loadFromDb()
       console.log(`in db, there are ${linksInDB.length} links`)
 
-      links.forEach(l => {
+      links.forEach(async (l) => {
         if (linksInDB.indexOf(l) === -1) {
           console.log(`${l} is not published yet`)
           // publish
           const postUrl = `https://graph.facebook.com/v2.5/${pageId}/feed?message=&link=${l}&access_token=${accessToken}`
-          console.log(postUrl)
-          got.post(postUrl)
+          await got.post(postUrl)
           console.log(`published ${l} to fb`)
           // add to db
           linksInDB.push(l)
@@ -50,5 +49,15 @@ export default {
     } catch (err) {
       console.error(`error occurred: ${err.stack}`)
     }
+  },
+
+  async testpost() {
+    [1, 2].forEach(async (i) => {
+      console.log(i)
+      const postResult = await got.post('http://httpbin.org/post', {
+        body: '{ "a" = "b" }',
+      })
+      console.log(postResult.body)
+    })
   },
 }

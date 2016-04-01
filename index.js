@@ -25,6 +25,12 @@ program.command('publish <feedurl> <pageId> <accessToken>')
     autopublish.publish(feedurl, pageId, accessToken)
   })
 
+program.command('testpost')
+  .description('test got.post')
+  .action(function() {
+    autopublish.testpost()
+  })
+
 program.parse(process.argv)
 
 if (!process.argv.slice(2).length) {
