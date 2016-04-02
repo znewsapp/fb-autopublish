@@ -34,7 +34,7 @@ export default {
       const linksInDB = this.loadFromDb()
       console.log(`in db, there are ${linksInDB.length} links`)
 
-      for (const link of links) {
+      for (const link of links.reverse()) {
         await (async (l) => {
           if (linksInDB.indexOf(l) === -1) {
             console.log(`${l} is not published yet`)
