@@ -4,6 +4,8 @@ import got from 'got'
 
 const dbFileName = 'jsondb.json'
 
+const sleep = (ms = 0) => new Promise(r => setTimeout(r, ms))
+
 export default {
   async read(feedLink) {
     const res = await got(feedLink)
@@ -32,32 +34,45 @@ export default {
       const linksInDB = this.loadFromDb()
       console.log(`in db, there are ${linksInDB.length} links`)
 
-      links.forEach(async (l) => {
-        if (linksInDB.indexOf(l) === -1) {
-          console.log(`${l} is not published yet`)
-          // publish
-          const postUrl = `https://graph.facebook.com/v2.5/${pageId}/feed?message=&link=${l}&access_token=${accessToken}`
-          await got.post(postUrl)
-          console.log(`published ${l} to fb`)
-          // add to db
-          linksInDB.push(l)
-          this.saveDb(linksInDB)
-        } else {
-          console.log(`link: ${l} already published, it is in db`)
-        }
-      })
+      for (const link of links) {
+        await (async (l) => {
+          if (linksInDB.indexOf(l) === -1) {
+            console.log(`${l} is not published yet`)
+            // publish
+            const postUrl = `https://graph.facebook.com/v2.5/${pageId}/feed?message=&link=${l}&access_token=${accessToken}`
+            await got.post(postUrl)
+            console.log(`published ${l} to fb`)
+            // add to db
+            linksInDB.push(l)
+            this.saveDb(linksInDB)
+          } else {
+            console.log(`link: ${l} already published, it is in db`)
+          }
+        })(link)
+      }
     } catch (err) {
       console.error(`error occurred: ${err.stack}`)
     }
   },
 
   async testpost() {
-    [1, 2].forEach(async (i) => {
+    // concurrent loop
+    const asyncFunc = async (i) => {
       console.log(i)
-      const postResult = await got.post('http://httpbin.org/post', {
-        body: '{ "a" = "b" }',
-      })
-      console.log(postResult.body)
-    })
+      await sleep(1000)
+      console.log(`end of ${i}`)
+      return i * 2
+    }
+    const res = await Promise.all([1, 2].map(i => asyncFunc(i)))
+    console.log(res)
+    // sequential loop
+    for (const j of [3, 4]) {
+      await (async (i) => {
+        console.log(i)
+        await sleep(1000)
+        console.log(`end of ${i}`)
+      })(j)
+    }
+    console.log('end of all')
   },
 }
