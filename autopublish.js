@@ -27,7 +27,7 @@ export default {
     return JSON.parse(str)
   },
 
-  async publish(feedLink, pageId, pageId2, accessToken) {
+  async publish(feedLink, pageId, pageId2, accessToken, accessToken2) {
     try {
       const links = await this.read(feedLink)
       console.log(`got ${links.length} post in feed`)
@@ -44,7 +44,7 @@ export default {
             console.log(`published ${l} to fb`)
             // publish to page 2
             const l2 = l.replace('/post/', '/m/')
-            const postUrl2 = `https://graph.facebook.com/v2.5/${pageId2}/feed?message=&link=${l2}&access_token=${accessToken}`
+            const postUrl2 = `https://graph.facebook.com/v2.5/${pageId2}/feed?message=&link=${l2}&access_token=${accessToken2}`
             await got.post(postUrl2)
             console.log(`published ${l} to fb alt page`)
             // add to db
