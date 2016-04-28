@@ -19,10 +19,10 @@ program.command('readrss <feedurl>')
     })
   })
 
-program.command('publish <feedurl> <pageId> <accessToken>')
+program.command('publish <feedurl> <pageId> <pageId2> <accessToken>')
   .description('publish items to fb')
-  .action(function(feedurl, pageId, accessToken) {
-    autopublish.publish(feedurl, pageId, accessToken)
+  .action(function(feedurl, pageId, pageId2, accessToken) {
+    autopublish.publish(feedurl, pageId, pageId2, accessToken)
   })
 
 program.command('testpost')

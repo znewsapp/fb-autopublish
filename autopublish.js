@@ -42,6 +42,10 @@ export default {
             const postUrl = `https://graph.facebook.com/v2.5/${pageId}/feed?message=&link=${l}&access_token=${accessToken}`
             await got.post(postUrl)
             console.log(`published ${l} to fb`)
+            // publish to page 2
+            const postUrl2 = `https://graph.facebook.com/v2.5/${pageId2}/feed?message=&link=${l}&access_token=${accessToken}`
+            await got.post(postUrl2)
+            console.log(`published ${l} to fb alt page`)
             // add to db
             linksInDB.push(l)
             this.saveDb(linksInDB)
